@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+
+const { title, description = "", current } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-mx">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title} · Assetto Server</title>
+        {description && <meta name="description" content={description} />}
+        <meta name="color-scheme" content="light dark" />
+        <meta
+            name="theme-color"
+            content="#f5f5f7"
+            media="(prefers-color-scheme: light)"
+        />
+        <meta
+            name="theme-color"
+            content="#000000"
+            media="(prefers-color-scheme: dark)"
+        />
+        <link
+            rel="icon"
+            href="/assets/icons/favicon.ico"
+            type="image/x-icon"
+        />
+    </head>
+    <body>
+        <a class="skip-link" href="#principal">Saltar al contenido</a>
+        <SiteHeader current={current} />
+        <main id="principal" class="page">
+            <slot />
+        </main>
+        <footer class="site-footer">
+            Panel de control de AssettoServer
+        </footer>
+    </body>
+</html>

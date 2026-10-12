@@ -1,0 +1,26 @@
+---
+// Panel de registros colapsable. El contenido lo carga
+// scripts/server.js desde /api/server/logs.
+import Icon from "./Icon.astro";
+---
+
+<section class="card logs-card" id="logs-card" aria-labelledby="logs-heading">
+    <button
+        class="logs-toggle"
+        id="logs-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="logs-body"
+    >
+        <span class="logs-title" id="logs-heading">Registros del servidor</span>
+        <span class="logs-count" id="logs-count" hidden>0</span>
+        <Icon name="chevron" class="chevron" size={18} />
+    </button>
+    <div class="logs-body" id="logs-body" aria-hidden="true">
+        <div class="logs-list" id="logs-list" tabindex="0" aria-label="Registros del servidor">
+            <p class="logs-state" id="logs-state">
+                Abre el panel para ver los registros.
+            </p>
+        </div>
+    </div>
+</section>

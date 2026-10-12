@@ -1,0 +1,5 @@
+-r requirements.txt
+
+# Desarrollo (no hace falta en producción)
+pytest
+ruff

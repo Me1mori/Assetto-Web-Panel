@@ -1,0 +1,51 @@
+# Plantilla del servicio del panel web.
+#
+# Sustituye los marcadores antes de instalar:
+#   sudo sed -e "s|__USER__|$USER|g" -e "s|__REPO__|/ruta/al/repo|g" \
+#     backend/services/assetoserver.service \
+#     | sudo tee /etc/systemd/system/assetoserver.service >/dev/null
+#   sudo systemctl daemon-reload && sudo systemctl enable --now assetoserver
+#
+# El `.env` contiene la ruta de los logs del juego y el resto de opciones. No
+# se versiona. No hay usuarios ni contraseñas que guardar.
+#   chmod 600 /ruta/al/repo/.env
+
+[Unit]
+Description=Activador de panel web del server de Assetto Corsa
+After=network.target
+
+[Service]
+Type=simple
+
+User=__USER__
+
+# Importante: el backend usa rutas relativas (frontend/dist y .env),
+# así que debe arrancar desde la raíz del repositorio.
+WorkingDirectory=__REPO__
+
+# Carga el .env: ASSETOSERVER_LOG_FOLDER, ASSETO_ALLOWED_HOSTS y el resto.
+# EnvironmentFile no falla si falta, pero sin él no hay registros. Poner
+# "sin guion" si quieres que el servicio NO arranque cuando falte:
+EnvironmentFile=-__REPO__/.env
+
+# El panel se sirve desde el HTML estático que genera Astro
+# (frontend/dist), no desde los HTML antiguos de frontend/.
+# El prefijo "-" hace que un fallo del build no impida arrancar
+# el panel (por ejemplo, si no hay red para instalar dependencias).
+ExecStartPre=-/bin/sh -c 'cd frontend && { [ -d node_modules ] || npm install; } && npm run build'
+
+# Por defecto run.py escucha solo en 127.0.0.1: el panel debe quedar
+# detrás de un proxy inverso. Descomentar para cambiarlo.
+# Environment=ASSETO_HOST=127.0.0.1
+# Environment=ASSETO_PORT=9094
+
+# Cabeceras Host permitidas (vacío = sin restricción). Activa TrustedHostMiddleware.
+# Environment=ASSETO_ALLOWED_HOSTS=panel.ejemplo.com,localhost,127.0.0.1
+
+ExecStart=__REPO__/.venv/bin/python __REPO__/run.py
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

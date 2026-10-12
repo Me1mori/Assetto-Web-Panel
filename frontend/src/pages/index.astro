@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ServerControl from "../components/ServerControl.astro";
+import LogsPanel from "../components/LogsPanel.astro";
+---
+
+<BaseLayout
+    title="Panel de control"
+    description="Gestiona el servidor dedicado de Assetto Corsa y consulta sus registros en tiempo real."
+    current="inicio"
+>
+    <div class="page-head">
+        <h1 class="page-title">Panel de control</h1>
+        <p class="page-subtitle">
+            Enciende, apaga o reinicia el servidor dedicado y consulta sus
+            registros en tiempo real.
+        </p>
+    </div>
+
+    <div class="content-grid">
+        <ServerControl />
+        <LogsPanel />
+    </div>
+</BaseLayout>
+
+<script src="../scripts/server.js"></script>

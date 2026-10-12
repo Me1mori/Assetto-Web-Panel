@@ -1,0 +1,26 @@
+# Plantilla del servicio del servidor dedicado de Assetto Corsa.
+#
+# Sustituye los marcadores antes de instalar:
+#   sudo sed -e "s|__USER__|$USER|g" -e "s|__ACSERVER__|/ruta/al/servidor|g" \
+#     backend/services/assettoserver.service \
+#     | sudo tee /etc/systemd/system/assettoserver.service >/dev/null
+
+[Unit]
+Description=Assetto Corsa Dedicated Server
+After=network.target
+
+[Service]
+Type=simple
+
+User=__USER__
+Group=users
+
+WorkingDirectory=__ACSERVER__
+
+ExecStart=__ACSERVER__/AssettoServer
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+---
+// Sección de relleno para las páginas aún sin contenido.
+import Icon from "./Icon.astro";
+
+const { icon, title, message } = Astro.props;
+---
+
+<div class="card placeholder-card">
+    <Icon name={icon} size={36} />
+    <h2>{title}</h2>
+    <p>{message}</p>
+</div>

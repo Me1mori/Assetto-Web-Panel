@@ -1,0 +1,37 @@
+---
+// Tarjeta de estado y controles del servidor.
+// El aviso de error se mantiene junto a los controles que lo provocan.
+// El estado inicial ("Comprobando…") lo sustituye scripts/server.js
+// con el valor real de /api/server/status.
+import Icon from "./Icon.astro";
+---
+
+<div class="stack">
+    <section class="card server-card" aria-labelledby="server-title">
+        <div class="status">
+            <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+            <div>
+                <p class="status-title" id="server-title">Servidor</p>
+                <p
+                    class="status-sub"
+                    id="status-sub"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Comprobando estado…
+                </p>
+            </div>
+        </div>
+        <div class="control-group">
+            <button class="btn btn-primary" id="power-btn" type="button" disabled>
+                <Icon name="power" size={17} />
+                <span id="power-label">Comprobando…</span>
+            </button>
+            <button class="btn btn-ghost" id="restart-btn" type="button" disabled>
+                <Icon name="refresh" size={16} />
+                <span>Reiniciar</span>
+            </button>
+        </div>
+    </section>
+    <p class="alert" id="control-alert" role="alert" hidden></p>
+</div>
