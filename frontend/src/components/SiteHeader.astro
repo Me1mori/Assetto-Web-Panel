@@ -22,6 +22,16 @@ const disabled = [
             <Icon name="gauge" class="brand-icon" size={22} />
             <span>Assetto Server</span>
         </a>
+        {current === "config" && (
+            <button
+                class="btn btn-primary btn-sm"
+                id="config-save-top"
+                type="button"
+                hidden
+            >
+                Guardar
+            </button>
+        )}
         <nav class="nav" aria-label="Navegación principal">
             {links.map(link => (
                 <a

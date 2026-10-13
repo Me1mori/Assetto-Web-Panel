@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 
 from backend.security import check_same_origin
-from backend.services import log_service, server_service
+from backend.services import config_service, log_service, server_service
 
 router = APIRouter(
     prefix="/api/server",
@@ -46,6 +46,30 @@ def server_status():
 @router.get("/logs")
 def server_logs():
     return log_service.parse_logs()
+
+
+@router.get("/config")
+def server_config():
+    config = config_service.get_config()
+    if "error" in config:
+        raise HTTPException(status_code=404, detail=config["error"])
+    return config
+
+
+@router.get("/weather-presets")
+def weather_presets():
+    return {"presets": config_service.get_weather_presets()}
+
+
+@router.put("/config")
+def server_config_update(request: Request, updates: dict):
+    check_same_origin(request)
+    try:
+        return _upstream(lambda: config_service.write_config(updates))
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
 
 
 @router.post("/start")

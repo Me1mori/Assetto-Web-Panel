@@ -30,7 +30,7 @@ python -m venv .venv
 
 # 3. Configura las rutas de tu servidor
 cp .env.example .env
-# Edita .env y ajusta ASSETOSERVER_LOG_FOLDER y ASSETOSERVER_SERVICE_NAME
+# Edita .env y ajusta ASSETOSERVER_FOLDER y ASSETOSERVER_SERVICE_NAME
 
 # 4. Frontend
 cd frontend && npm install && npm run build && cd ..
@@ -74,7 +74,7 @@ Ver [`.env.example`](./.env.example). Las variables principales:
 
 | Variable | Para qué |
 | --- | --- |
-| `ASSETOSERVER_LOG_FOLDER` | Carpeta con los logs del juego |
+| `ASSETOSERVER_FOLDER` | Carpeta principal del servidor (`logs/`, `cfg/`) |
 | `ASSETOSERVER_SERVICE_NAME` | Unidad systemd a controlar |
 | `ASSETO_HOST` / `ASSETO_PORT` | Interfaz y puerto del backend |
 | `ASSETO_ALLOWED_ORIGINS` | Orígenes extra admitidos en los POST (CSRF) |

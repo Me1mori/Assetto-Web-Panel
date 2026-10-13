@@ -70,8 +70,10 @@ app.mount(
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception(request: Request, exc: StarletteHTTPException):
 
-    if exc.status_code == 404:
+    if exc.status_code == 404 and not request.url.path.startswith("/api/"):
         # Página 404 de Astro; mientras no exista, respuesta de texto.
+        # Las rutas /api/* siempre responden JSON para que el frontend
+        # pueda leer el `detail` (p. ej. falta server_cfg.ini).
         not_found = DIST_DIR / "404.html"
         if not_found.is_file():
             return FileResponse(not_found, status_code=404)

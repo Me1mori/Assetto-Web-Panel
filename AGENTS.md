@@ -35,7 +35,7 @@ Todo por variables de entorno (ver `.env.example`). Las esenciales:
 
 | Variable | Para qué |
 | --- | --- |
-| `ASSETOSERVER_LOG_FOLDER` | Carpeta con los logs del juego |
+| `ASSETOSERVER_FOLDER` | Carpeta principal del servidor (`logs/`, `cfg/`, …) |
 | `ASSETOSERVER_SERVICE_NAME` | Unidad systemd a controlar |
 | `ASSETO_HOST` / `ASSETO_PORT` | Interfaz y puerto (producción) |
 | `ASSETO_DEV_HOST` / `ASSETO_DEV_PORT` | Interfaz y puerto (desarrollo) |
@@ -48,17 +48,24 @@ Todo por variables de entorno (ver `.env.example`). Las esenciales:
 ## Convenciones
 
 - Textos de UI y comentarios en español (es-mx).
-- Prefijo de API: `/api/server/{status,logs,start,stop,restart}`. No hay más rutas.
+- Prefijo de API: `/api/server/{status,logs,config,weather-presets,start,stop,restart}`. No hay más rutas.
 - **Prohibido gestionar usuarios o contraseñas.** No se añaden cuentas, registro,
   roles, sesiones, cookies, tokens ni HTTP Basic (`ASSETO_BASIC_*`, `auth.py`,
   `Authorization`, `401`). Solo una insistencia explícita del usuario puede reabrir el tema.
 - **Los logs contienen datos personales** (Steam ID, IPs, chat). `log_service`
   los redacta antes de exponerlos: nunca devolverlos en crudo.
-- **Protección:** los tres POST comprueban el `Origin` (CSRF) antes de tocar
-  `systemctl`. Las lecturas (`/status`, `/logs`) no se comprueban.
+- **Las contraseñas del juego nunca se exponen.** `config_service` omite
+  `PASSWORD` y `ADMIN_PASSWORD` de `server_cfg.ini` y solo informa si existen
+  (`*_SET`).
+- **Protección:** los tres POST y el PUT de `/config` comprueban el `Origin`
+  (CSRF) antes de tocar `systemctl` o `server_cfg.ini`. Las lecturas
+  (`/status`, `/logs`, `/config`) no se comprueban.
 - `backend/tests/test_api_sin_acceso.py` es la red de seguridad: falla si alguien
   reintroduce `401`, `WWW-Authenticate`, `auth.py` o rutas `/api/auth/*`.
 - Iconos: SVG en `frontend/src/components/Icon.astro` (no emojis). Acepta `class`.
+- Bitácora de desarrollo: `private/MEMORY.md` (no se versiona). Cada cambio o
+  mejora se anota ahí primero; el mensaje del commit se redacta en base a lo
+  anotado.
 - `backend/paths.py` define `DIST_DIR`. No usar `Path("frontend/dist")` en otros módulos.
 - Tests: `.venv/bin/pytest`. Fixtures en `backend/tests/conftest.py`.
 - Lint: `.venv/bin/ruff check .`

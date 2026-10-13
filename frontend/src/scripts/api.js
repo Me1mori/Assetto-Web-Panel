@@ -4,6 +4,8 @@
 export const API = {
     status: "/api/server/status",
     logs: "/api/server/logs",
+    config: "/api/server/config",
+    presets: "/api/server/weather-presets",
     start: "/api/server/start",
     stop: "/api/server/stop",
     restart: "/api/server/restart"
@@ -54,5 +56,13 @@ export function postJSON(url, body) {
             ? { "Content-Type": "application/json" }
             : undefined,
         body: body ? JSON.stringify(body) : undefined
+    });
+}
+
+export function putJSON(url, body) {
+    return request(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
     });
 }

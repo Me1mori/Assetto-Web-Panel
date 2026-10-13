@@ -163,10 +163,6 @@ nbproject/
 /.claude/
 /.cursor/
 /.roo/
-# `.opencode/` entero ignorado; los agentes de seguridad sí se versionan, así
-# que se re-incluye la carpeta. Sin esto las negaciones NO funcionarían: Git no
-# puede re-incluir un archivo si su directorio padre está excluido.
-/.opencode/*
-!/.opencode/agents/
-/.opencode/skills/
-/.opencode/package.json
+# `.opencode/` entero ignorado: estado local de agentes, no se versiona.
+# Sin la re-inclusión de `agents/` (que antes estaba), Git ignora todo.
+/.opencode/

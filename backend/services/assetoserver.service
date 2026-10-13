@@ -23,7 +23,7 @@ User=__USER__
 # así que debe arrancar desde la raíz del repositorio.
 WorkingDirectory=__REPO__
 
-# Carga el .env: ASSETOSERVER_LOG_FOLDER, ASSETO_ALLOWED_HOSTS y el resto.
+# Carga el .env: ASSETOSERVER_FOLDER, ASSETO_ALLOWED_HOSTS y el resto.
 # EnvironmentFile no falla si falta, pero sin él no hay registros. Poner
 # "sin guion" si quieres que el servicio NO arranque cuando falte:
 EnvironmentFile=-__REPO__/.env

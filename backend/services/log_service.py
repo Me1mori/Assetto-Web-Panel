@@ -13,12 +13,12 @@ from datetime import datetime
 from pathlib import Path
 
 # Ruta de los logs de AssettoServer.
-# En producción la define ASSETOSERVER_LOG_FOLDER (systemd / entorno).
+# En producción la define ASSETOSERVER_FOLDER (systemd / entorno).
 # Sin esa variable se usa "logs" relativo a la raíz del repo, para que el
 # proyecto sea portable y no lleve rutas personales dentro.
 LOG_FOLDER = Path(
-    os.environ.get("ASSETOSERVER_LOG_FOLDER") or "logs"
-).expanduser()
+    os.environ.get("ASSETOSERVER_FOLDER") or "."
+).expanduser() / "logs"
 
 # Tope para que la respuesta no crezca sin límite durante una sesión larga.
 MAX_LOG_LINES = int(
