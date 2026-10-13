@@ -166,3 +166,4 @@ nbproject/
 # `.opencode/` entero ignorado: estado local de agentes, no se versiona.
 # Sin la re-inclusión de `agents/` (que antes estaba), Git ignora todo.
 /.opencode/
+.playwright-mcp/
