@@ -28,6 +28,12 @@ const { title, description = "", current } = Astro.props;
             href="/assets/icons/favicon.ico"
             type="image/x-icon"
         />
+        {/* HTML de las demás pestañas: el navegador las descarga en
+            segundo plano para que el cambio no parpadee. Los datos los
+            adelanta scripts/prefetch.js (ver BaseLayout abajo). */}
+        <link rel="prefetch" href="/map" />
+        <link rel="prefetch" href="/cars" />
+        <link rel="prefetch" href="/config" />
     </head>
     <body>
         <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -38,5 +44,6 @@ const { title, description = "", current } = Astro.props;
         <footer class="site-footer">
             Panel de control de AssettoServer
         </footer>
+        <script src="../scripts/prefetch.js"></script>
     </body>
 </html>

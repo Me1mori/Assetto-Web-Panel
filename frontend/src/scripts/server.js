@@ -237,19 +237,42 @@ restartBtn.addEventListener("click", () => {
 
 // ---------- Bucle de polling ----------
 
-// Corre mientras la pestaña esté abierta, cada 1–5 s, y tolera fallos de red:
-// un error no mata el bucle en silencio.
-async function refreshLoop() {
-    while (true) {
-        await updateStatus();
+// Una petición al entrar y otra al actuar (ver `control`); después solo lo
+// necesario: el estado cada 15 s y los registros cada 5 s (únicamente con el
+// panel abierto). Con la pestaña oculta no se pide nada y al volver se
+// refresca de inmediato. Un error nunca mata el bucle en silencio.
+const STATUS_MS = 15000;
+const LOGS_MS = 5000;
 
-        if (logsOpen) {
-            await updateLogs();
+let lastStatusAt = 0;
+
+async function refreshLoop() {
+    await updateStatus();
+    lastStatusAt = Date.now();
+
+    while (true) {
+        if (!document.hidden) {
+            if (Date.now() - lastStatusAt >= STATUS_MS) {
+                await updateStatus();
+                lastStatusAt = Date.now();
+            }
+
+            if (logsOpen) {
+                await updateLogs();
+            }
         }
 
-        await sleep(1000 + Math.random() * 4000);
+        await sleep(LOGS_MS + Math.random() * 2000);
     }
 }
+
+document.addEventListener("visibilitychange", () => {
+    // Al volver a la pestaña el estado puede estar desfasado: se adelanta
+    // la próxima comprobación en vez de esperar al siguiente ciclo.
+    if (!document.hidden) {
+        lastStatusAt = 0;
+    }
+});
 
 // El panel se carga directamente: no hay nada que ocultar ni que desbloquear.
 refreshLoop();

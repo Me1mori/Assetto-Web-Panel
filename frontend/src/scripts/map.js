@@ -3,7 +3,7 @@
 // Muestra TRACK + CONFIG_TRACK (con lista de pistas instaladas), la hora en
 // 24 h convertida a SUN_ANGLE al guardar, TIME_OF_DAY_MULT y los tramos de
 // clima con presets en español. Guarda con PUT /api/server/config.
-import { API, getJSON, putJSON } from "./api.js";
+import { API, getJSON, peekCache, putJSON } from "./api.js";
 import {
     collectUpdates, connectSaveButton, escapeHtml, fillSimpleFields,
     horaASol, makeAlert, markInitial, minutosAHora, saveConfigUpdates,
@@ -268,7 +268,44 @@ function fill(config) {
     buildWeatherCards(config);
 }
 
+function fillTracks(trks) {
+    if (trackList && trks && Array.isArray(trks.tracks)) {
+        trackList.textContent = "";
+        for (const track of trks.tracks) {
+            const option = document.createElement("option");
+            option.value = track.name;
+            trackList.appendChild(option);
+        }
+    }
+}
+
+function showContent() {
+    if (state) {
+        state.hidden = true;
+    }
+    if (form) {
+        form.hidden = false;
+    }
+}
+
 async function cargar() {
+    // Pintado instantáneo: si la precarga ya guardó datos, se muestran sin
+    // pasar por "Cargando mapa…" y luego se revalidan en segundo plano.
+    const cachedConfig = peekCache(API.config);
+    if (cachedConfig) {
+        presets = [];
+        const cachedPres = peekCache(API.presets);
+        if (cachedPres && Array.isArray(cachedPres.presets)) {
+            presets = cachedPres.presets;
+        }
+        fillTracks(peekCache(API.tracks));
+        fill(cachedConfig);
+        showContent();
+        // Revalidación silenciosa: actualiza sin parpadear.
+        revalidar();
+        return;
+    }
+
     let config;
     try {
         const [cfg, pres, trks] = await Promise.all([
@@ -284,14 +321,7 @@ async function cargar() {
         ]);
         config = cfg;
         presets = Array.isArray(pres.presets) ? pres.presets : [];
-        if (trackList && Array.isArray(trks.tracks)) {
-            trackList.textContent = "";
-            for (const track of trks.tracks) {
-                const option = document.createElement("option");
-                option.value = track.name;
-                trackList.appendChild(option);
-            }
-        }
+        fillTracks(trks);
     } catch (error) {
         console.error("No se pudo cargar la configuración:", error);
         if (state) {
@@ -300,11 +330,26 @@ async function cargar() {
         return;
     }
     fill(config);
-    if (state) {
-        state.hidden = true;
-    }
-    if (form) {
-        form.hidden = false;
+    showContent();
+}
+
+async function revalidar() {
+    try {
+        const [cfg, pres, trks] = await Promise.all([
+            getJSON(API.config),
+            getJSON(API.presets).catch(() => null),
+            getJSON(API.tracks).catch(() => null)
+        ]);
+        if (pres && Array.isArray(pres.presets)) {
+            presets = pres.presets;
+        }
+        if (trks) {
+            fillTracks(trks);
+        }
+        fill(cfg);
+    } catch (error) {
+        // Se sigue mostrando lo cacheado; el error solo va a consola.
+        console.warn("Sin revalidar el mapa:", error);
     }
 }
 

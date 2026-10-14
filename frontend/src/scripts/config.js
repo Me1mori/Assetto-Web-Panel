@@ -4,7 +4,7 @@
 // (PICKUP_MODE_ENABLED, LOOP_MODE, REGISTER_TO_LOBBY, LEGAL_TYRES, puertos…)
 // sigue en la API pero no se muestra en la web. La pista y el clima viven en
 // /map; los coches y las reglas en /cars.
-import { API, getJSON } from "./api.js";
+import { API, getJSON, peekCache } from "./api.js";
 import {
     collectUpdates, connectSaveButton, fillSimpleFields, makeAlert,
     saveConfigUpdates, setText
@@ -27,6 +27,19 @@ function fill(config) {
 }
 
 async function cargar() {
+    // Pintado instantáneo con lo precargado; luego revalidación silenciosa.
+    const cached = peekCache(API.config);
+    if (cached) {
+        fill(cached);
+        showContent();
+        try {
+            fill(await getJSON(API.config));
+        } catch (error) {
+            console.warn("Sin revalidar la configuración:", error);
+        }
+        return;
+    }
+
     let config;
     try {
         config = await getJSON(API.config);
@@ -38,6 +51,10 @@ async function cargar() {
         return;
     }
     fill(config);
+    showContent();
+}
+
+function showContent() {
     if (state) {
         state.hidden = true;
     }

@@ -14,6 +14,46 @@ export const API = {
     restart: "/api/server/restart"
 };
 
+// ---------- Caché en sessionStorage (stale-while-revalidate) ----------
+// Al cargar cualquier página se precargan los endpoints pesados y se
+// guardan aquí. Al entrar a otra pestaña se pinta lo guardado al instante
+// (sin "Cargando…") y luego se revalida en segundo plano. Vive solo en la
+// pestaña actual: no hay datos personales persistentes entre sesiones.
+const CACHE_PREFIX = "asseto:api:";
+const CACHE_TTL = 90_000; // 90 s: suficiente para navegar entre pestañas
+
+function cacheKey(url) {
+    return `${CACHE_PREFIX}${url}`;
+}
+
+export function peekCache(url) {
+    try {
+        const raw = sessionStorage.getItem(cacheKey(url));
+        if (!raw) {
+            return null;
+        }
+        const { time, data } = JSON.parse(raw);
+        if (!time || Date.now() - time > CACHE_TTL) {
+            sessionStorage.removeItem(cacheKey(url));
+            return null;
+        }
+        return data;
+    } catch {
+        return null;
+    }
+}
+
+export function writeCache(url, data) {
+    try {
+        sessionStorage.setItem(
+            cacheKey(url),
+            JSON.stringify({ time: Date.now(), data })
+        );
+    } catch {
+        // Almacenamiento lleno o bloqueado: se sigue sin caché.
+    }
+}
+
 async function request(url, options) {
     let response;
 
@@ -49,7 +89,12 @@ export function getJSON(url) {
     // Sin cabeceras, sin tokens y sin credenciales: este panel no tiene
     // usuarios ni contraseñas. Los POST se frenan por `Origin` (CSRF).
     // `fetch` ya envía `credentials: "same-origin"` por defecto.
-    return request(url);
+    // Los GET exitosos se guardan en caché para pintar al instante al
+    // cambiar de pestaña (ver peekCache/writeCache).
+    return request(url).then(data => {
+        writeCache(url, data);
+        return data;
+    });
 }
 
 export function postJSON(url, body) {
@@ -67,5 +112,10 @@ export function putJSON(url, body) {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
+    }).then(data => {
+        // Tras guardar, lo respondido ya es lo fresco: actualiza la caché
+        // para no repintar lo viejo al volver a la pestaña.
+        writeCache(url, data);
+        return data;
     });
 }

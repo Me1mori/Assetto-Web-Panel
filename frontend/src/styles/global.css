@@ -190,9 +190,17 @@ body {
 }
 
 /* En las páginas de ajustes el botón Guardar va a la derecha, pegado al lado
-   izquierdo del menú. Sin botón la cabecera queda como siempre. */
+   izquierdo del menú. Sin botón la cabecera queda como siempre.
+   Comparte las medidas del .nav-item para no verse más grande que el menú;
+   solo cambia el fondo a primario. */
 #save-top {
     margin-left: auto;
+    min-height: 0;
+    padding: 0.4rem 0.85rem;
+    border: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
 }
 
 .nav::-webkit-scrollbar {
@@ -227,11 +235,16 @@ body {
 .nav-item[aria-current="page"] {
     background: var(--accent);
     color: var(--on-accent);
+    cursor: default;
 }
 
 .nav-item[aria-current="page"]:hover {
     background: var(--accent-hover);
     color: var(--on-accent);
+}
+
+.nav-item[aria-current="page"]:active {
+    transform: none;
 }
 
 /* Elementos de navegación aún no implementados */

@@ -5,7 +5,7 @@
 // TEAM nunca llegan del backend. Las reglas son campos simples de SERVER que
 // se guardan con PUT /api/server/config, mientras que los coches usan
 // PUT /api/server/entry-list. El botón Guardar envía ambos si cambiaron.
-import { API, getJSON, putJSON } from "./api.js";
+import { API, getJSON, peekCache, putJSON } from "./api.js";
 import {
     collectUpdates, connectSaveButton, escapeHtml, fillSimpleFields,
     makeAlert, setSaving, setText
@@ -155,6 +155,21 @@ function collectCarUpdates() {
 }
 
 async function cargar() {
+    // Pintado instantáneo con lo precargado; luego revalidación silenciosa.
+    const cachedConfig = peekCache(API.config);
+    const cachedEntries = peekCache(API.entryList);
+    if (cachedConfig && cachedEntries) {
+        const cachedAvail = peekCache(API.availableCars);
+        available = cachedAvail && Array.isArray(cachedAvail.models)
+            ? cachedAvail.models
+            : [];
+        fillRules(cachedConfig);
+        fillEntry(cachedEntries);
+        showContent();
+        revalidar();
+        return;
+    }
+
     try {
         const [cfg, entries, avail] = await Promise.all([
             getJSON(API.config),
@@ -174,11 +189,32 @@ async function cargar() {
         }
         return;
     }
+    showContent();
+}
+
+function showContent() {
     if (state) {
         state.hidden = true;
     }
     if (form) {
         form.hidden = false;
+    }
+}
+
+async function revalidar() {
+    try {
+        const [cfg, entries, avail] = await Promise.all([
+            getJSON(API.config),
+            getJSON(API.entryList),
+            getJSON(API.availableCars).catch(() => null)
+        ]);
+        if (avail && Array.isArray(avail.models)) {
+            available = avail.models;
+        }
+        fillRules(cfg);
+        fillEntry(entries);
+    } catch (error) {
+        console.warn("Sin revalidar los coches:", error);
     }
 }
 

@@ -35,14 +35,19 @@ const withSave = ["map", "cars", "config"].includes(current);
         )}
         <nav class="nav" aria-label="Navegación principal">
             {links.map(link => (
-                <a
-                    class="nav-item"
-                    href={link.href}
-                    aria-current={current === link.id ? "page" : undefined}
-                >
-                    <Icon name={link.icon} size={16} />
-                    <span>{link.label}</span>
-                </a>
+                current === link.id ? (
+                    // La página activa no es un enlace: ya estás ahí y
+                    // recargarla solo repetiría todas las peticiones.
+                    <span class="nav-item" aria-current="page">
+                        <Icon name={link.icon} size={16} />
+                        <span>{link.label}</span>
+                    </span>
+                ) : (
+                    <a class="nav-item" href={link.href}>
+                        <Icon name={link.icon} size={16} />
+                        <span>{link.label}</span>
+                    </a>
+                )
             ))}
         </nav>
     </div>
