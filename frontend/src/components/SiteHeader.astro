@@ -1,19 +1,20 @@
 ---
 import Icon from "./Icon.astro";
 
-// `current` marca el elemento de navegación activo ("inicio", "config", "menu").
+// `current` marca el elemento de navegación activo
+// ("inicio", "map", "cars", "config").
 const { current } = Astro.props;
 
 const links = [
     { id: "inicio", href: "/", label: "Inicio", icon: "home" },
+    { id: "map", href: "/map", label: "Mapa", icon: "map" },
+    { id: "cars", href: "/cars", label: "Coches", icon: "car" },
     { id: "config", href: "/config", label: "Configuración", icon: "gear" }
 ];
 
-// Páginas que aún no existen: se muestran como elementos deshabilitados.
-const disabled = [
-    { label: "Mapa", icon: "map" },
-    { label: "Coche", icon: "car" }
-];
+// Las tres páginas de ajustes comparten el botón Guardar de la cabecera.
+// Cada página lo muestra y su script lo conecta a su propio formulario.
+const withSave = ["map", "cars", "config"].includes(current);
 ---
 
 <header class="site-header">
@@ -22,10 +23,10 @@ const disabled = [
             <Icon name="gauge" class="brand-icon" size={22} />
             <span>Assetto Server</span>
         </a>
-        {current === "config" && (
+        {withSave && (
             <button
                 class="btn btn-primary btn-sm"
-                id="config-save-top"
+                id="save-top"
                 type="button"
                 hidden
             >
@@ -42,16 +43,6 @@ const disabled = [
                     <Icon name={link.icon} size={16} />
                     <span>{link.label}</span>
                 </a>
-            ))}
-            {disabled.map(item => (
-                <span
-                    class="nav-item is-disabled"
-                    title="Próximamente"
-                    aria-disabled="true"
-                >
-                    <Icon name={item.icon} size={16} />
-                    <span class="sr-only">{item.label}</span>
-                </span>
             ))}
         </nav>
     </div>

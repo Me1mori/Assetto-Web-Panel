@@ -5,7 +5,7 @@ import Icon from "../components/Icon.astro";
 
 <BaseLayout
     title="Configuración"
-    description="Hora, clima y ajustes del servidor dedicado de Assetto Corsa."
+    description="Sesiones, pista dinámica y cupo del servidor dedicado de Assetto Corsa."
     current="config"
 >
     <div class="page-head">
@@ -18,95 +18,17 @@ import Icon from "../components/Icon.astro";
 
     <form class="stack" id="config-form" hidden>
         <div class="content-grid config-grid" id="config-grid" aria-busy="true">
-            <section class="card config-card" aria-labelledby="cfg-hora">
-                <div class="config-header">
-                    <Icon name="sun" size={20} />
-                    <h2 id="cfg-hora">Hora del día</h2>
-                </div>
-                <div class="config-body">
-                    <label class="field">
-                        <span class="field-label">Hora (24 h)</span>
-                        <input
-                            class="field-input"
-                            type="time"
-                            id="hora-input"
-                        />
-                    </label>
-                    <div class="config-item">
-                        <span class="config-label">SUN_ANGLE resultante</span>
-                        <span class="config-value mono" id="hora-sol-valor">…</span>
-                    </div>
-                    <label class="field">
-                        <span class="field-label">Multiplicador de tiempo</span>
-                        <input
-                            class="field-input"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            data-section="SERVER"
-                            data-key="TIME_OF_DAY_MULT"
-                        />
-                    </label>
-                </div>
-            </section>
-
-            <section class="card config-card" aria-labelledby="cfg-clima">
-                <div class="config-header">
-                    <Icon name="sun" size={20} />
-                    <h2 id="cfg-clima">Clima</h2>
-                </div>
-                <div class="config-body">
-                    <div class="stack" id="weather-cards" aria-busy="true"></div>
-                    <button
-                        class="btn btn-ghost"
-                        id="weather-add"
-                        type="button"
-                    >
-                        Agregar tramo
-                    </button>
-                </div>
-            </section>
-
             <section class="card config-card" aria-labelledby="cfg-servidor">
                 <div class="config-header">
                     <Icon name="gear" size={20} />
                     <h2 id="cfg-servidor">Servidor</h2>
                 </div>
                 <div class="config-body">
-                <div class="config-item">
-                    <span class="config-label">Nombre</span>
-                    <span class="config-value" id="servidor-nombre">…</span>
-                </div>
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Pista</span>
-                            <input
-                                class="field-input mono"
-                                type="text"
-                                data-section="SERVER"
-                                data-key="TRACK"
-                            />
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Variante</span>
-                            <input
-                                class="field-input mono"
-                                type="text"
-                                data-section="SERVER"
-                                data-key="CONFIG_TRACK"
-                            />
-                        </label>
+                    <div class="config-item">
+                        <span class="config-label">Nombre</span>
+                        <span class="config-value" id="servidor-nombre">…</span>
                     </div>
                     <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Neum. legales</span>
-                            <input
-                                class="field-input mono"
-                                type="text"
-                                data-section="SERVER"
-                                data-key="LEGAL_TYRES"
-                            />
-                        </label>
                         <label class="field">
                             <span class="field-label">Cupo</span>
                             <input
@@ -130,44 +52,6 @@ import Icon from "../components/Icon.astro";
                             />
                         </label>
                     </div>
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Pickup</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="PICKUP_MODE_ENABLED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Loop</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="LOOP_MODE"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Lobby</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="REGISTER_TO_LOBBY"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                    </div>
                     <div class="config-item">
                         <span class="config-label">Contraseña</span>
                         <span class="config-value" id="servidor-pass">…</span>
@@ -176,22 +60,6 @@ import Icon from "../components/Icon.astro";
                         <span class="config-label">Contraseña admin</span>
                         <span class="config-value" id="servidor-admin">…</span>
                     </div>
-                </div>
-            </section>
-
-            <section class="card config-card" aria-labelledby="cfg-coches">
-                <div class="config-header">
-                    <Icon name="car" size={20} />
-                    <h2 id="cfg-coches">Coches</h2>
-                </div>
-                <div class="placeholder-card">
-                    <h3>Próximamente</h3>
-                    <p>
-                        Valor actual: <code id="coches-valor">…</code>. Con
-                        <code>*</code> los coches salen de otro archivo
-                        (<code>entry_list.ini</code>), así que esta sección aún
-                        no se edita aquí.
-                    </p>
                 </div>
             </section>
 
@@ -229,7 +97,6 @@ import Icon from "../components/Icon.astro";
                                 class="field-input"
                                 data-section="PRACTICE"
                                 data-key="IS_OPEN"
-                                data-bool="1"
                             >
                                 <option value="1">Sí</option>
                                 <option value="0">No</option>
@@ -241,7 +108,6 @@ import Icon from "../components/Icon.astro";
                                 class="field-input"
                                 data-section="PRACTICE"
                                 data-key="INFINITE"
-                                data-bool="1"
                             >
                                 <option value="1">Sí</option>
                                 <option value="0">No</option>
@@ -332,148 +198,6 @@ import Icon from "../components/Icon.astro";
                                 min="0"
                                 data-section="DYNAMIC_TRACK"
                                 data-key="LAP_GAIN"
-                            />
-                        </label>
-                    </div>
-                </div>
-            </section>
-
-            <section class="card config-card" aria-labelledby="cfg-reglas">
-                <div class="config-header">
-                    <Icon name="car" size={20} />
-                    <h2 id="cfg-reglas">Reglas</h2>
-                </div>
-                <div class="config-body">
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">ABS</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="ABS_ALLOWED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">TC</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="TC_ALLOWED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Estabilidad</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="STABILITY_ALLOWED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Embrague auto.</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="AUTOCLUTCH_ALLOWED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Mantas</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="TYRE_BLANKETS_ALLOWED"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Espejo virtual</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="FORCE_VIRTUAL_MIRROR"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Combustible %</span>
-                            <input
-                                class="field-input"
-                                type="number"
-                                min="0"
-                                data-section="SERVER"
-                                data-key="FUEL_RATE"
-                            />
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Daños %</span>
-                            <input
-                                class="field-input"
-                                type="number"
-                                min="0"
-                                data-section="SERVER"
-                                data-key="DAMAGE_MULTIPLIER"
-                            />
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Desgaste %</span>
-                            <input
-                                class="field-input"
-                                type="number"
-                                min="0"
-                                data-section="SERVER"
-                                data-key="TYRE_WEAR_RATE"
-                            />
-                        </label>
-                    </div>
-                    <div class="field-row">
-                        <label class="field">
-                            <span class="field-label">Penalizaciones</span>
-                            <select
-                                class="field-input"
-                                data-section="SERVER"
-                                data-key="PENALTIES"
-                                data-bool="1"
-                            >
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Salidas permitidas</span>
-                            <input
-                                class="field-input"
-                                type="number"
-                                min="0"
-                                max="999"
-                                data-section="SERVER"
-                                data-key="ALLOWED_TYRES_OUT"
                             />
                         </label>
                     </div>

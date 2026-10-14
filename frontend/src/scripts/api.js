@@ -6,6 +6,9 @@ export const API = {
     logs: "/api/server/logs",
     config: "/api/server/config",
     presets: "/api/server/weather-presets",
+    entryList: "/api/server/entry-list",
+    tracks: "/api/server/tracks",
+    availableCars: "/api/server/available-cars",
     start: "/api/server/start",
     stop: "/api/server/stop",
     restart: "/api/server/restart"

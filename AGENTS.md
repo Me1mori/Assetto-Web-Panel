@@ -48,7 +48,9 @@ Todo por variables de entorno (ver `.env.example`). Las esenciales:
 ## Convenciones
 
 - Textos de UI y comentarios en español (es-mx).
-- Prefijo de API: `/api/server/{status,logs,config,weather-presets,start,stop,restart}`. No hay más rutas.
+- Prefijo de API: `/api/server/{status,logs,config,weather-presets,entry-list,tracks,available-cars,start,stop,restart}`. No hay más rutas.
+- **Los inscritos contienen datos personales** (`GUID`, `DRIVERNAME`, `TEAM`).
+  `entry_service` solo expone `MODEL`/`SKIN` + conteo: nunca devolverlos en crudo.
 - **Prohibido gestionar usuarios o contraseñas.** No se añaden cuentas, registro,
   roles, sesiones, cookies, tokens ni HTTP Basic (`ASSETO_BASIC_*`, `auth.py`,
   `Authorization`, `401`). Solo una insistencia explícita del usuario puede reabrir el tema.
@@ -57,9 +59,11 @@ Todo por variables de entorno (ver `.env.example`). Las esenciales:
 - **Las contraseñas del juego nunca se exponen.** `config_service` omite
   `PASSWORD` y `ADMIN_PASSWORD` de `server_cfg.ini` y solo informa si existen
   (`*_SET`).
-- **Protección:** los tres POST y el PUT de `/config` comprueban el `Origin`
-  (CSRF) antes de tocar `systemctl` o `server_cfg.ini`. Las lecturas
-  (`/status`, `/logs`, `/config`) no se comprueban.
+- **Protección:** los tres POST y los PUT de `/config` y `/entry-list`
+  comprueban el `Origin` (CSRF) antes de tocar `systemctl`, `server_cfg.ini` o
+  `entry_list.ini`. Las lecturas
+  (`/status`, `/logs`, `/config`, `/entry-list`, `/tracks`, `/available-cars`)
+  no se comprueban.
 - `backend/tests/test_api_sin_acceso.py` es la red de seguridad: falla si alguien
   reintroduce `401`, `WWW-Authenticate`, `auth.py` o rutas `/api/auth/*`.
 - Iconos: SVG en `frontend/src/components/Icon.astro` (no emojis). Acepta `class`.

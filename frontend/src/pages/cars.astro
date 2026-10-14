@@ -1,0 +1,179 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout
+    title="Coches"
+    description="Coches inscritos y reglas del servidor dedicado de Assetto Corsa."
+    current="cars"
+>
+    <div class="page-head">
+        <h1 class="page-title">Coches</h1>
+    </div>
+
+    <p class="logs-state" id="cars-state" role="status">
+        Cargando coches…
+    </p>
+
+    <form class="stack" id="cars-form" hidden>
+        <div class="content-grid config-grid" id="cars-grid" aria-busy="true">
+            <section class="card config-card" aria-labelledby="cars-titulo">
+                <div class="config-header">
+                    <Icon name="car" size={20} />
+                    <h2 id="cars-titulo">Inscritos</h2>
+                </div>
+                <div class="config-body">
+                    <div class="config-item">
+                        <span class="config-label">Plazas</span>
+                        <span class="config-value" id="cars-total">…</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">CARS en server_cfg.ini</span>
+                        <span class="config-value mono" id="coches-valor">…</span>
+                    </div>
+                    <div class="stack" id="cars-groups" aria-busy="true"></div>
+                </div>
+            </section>
+
+            <section class="card config-card" aria-labelledby="cfg-reglas">
+                <div class="config-header">
+                    <Icon name="car" size={20} />
+                    <h2 id="cfg-reglas">Reglas</h2>
+                </div>
+                <div class="config-body">
+                    <div class="field-row">
+                        <label class="field">
+                            <span class="field-label">ABS</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="ABS_ALLOWED"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">TC</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="TC_ALLOWED"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Estabilidad</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="STABILITY_ALLOWED"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="field-row">
+                        <label class="field">
+                            <span class="field-label">Embrague auto.</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="AUTOCLUTCH_ALLOWED"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Mantas</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="TYRE_BLANKETS_ALLOWED"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Espejo virtual</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="FORCE_VIRTUAL_MIRROR"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="field-row">
+                        <label class="field">
+                            <span class="field-label">Combustible %</span>
+                            <input
+                                class="field-input"
+                                type="number"
+                                min="0"
+                                data-section="SERVER"
+                                data-key="FUEL_RATE"
+                            />
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Daños %</span>
+                            <input
+                                class="field-input"
+                                type="number"
+                                min="0"
+                                data-section="SERVER"
+                                data-key="DAMAGE_MULTIPLIER"
+                            />
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Desgaste %</span>
+                            <input
+                                class="field-input"
+                                type="number"
+                                min="0"
+                                data-section="SERVER"
+                                data-key="TYRE_WEAR_RATE"
+                            />
+                        </label>
+                    </div>
+                    <div class="field-row">
+                        <label class="field">
+                            <span class="field-label">Penalizaciones</span>
+                            <select
+                                class="field-input"
+                                data-section="SERVER"
+                                data-key="PENALTIES"
+                            >
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Salidas permitidas</span>
+                            <input
+                                class="field-input"
+                                type="number"
+                                min="0"
+                                max="999"
+                                data-section="SERVER"
+                                data-key="ALLOWED_TYRES_OUT"
+                            />
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <p class="alert" id="cars-alert" role="alert" hidden></p>
+    </form>
+</BaseLayout>
+
+<script src="../scripts/cars.js"></script>

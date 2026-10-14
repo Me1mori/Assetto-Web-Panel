@@ -1,0 +1,106 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout
+    title="Mapa"
+    description="Pista, hora del día y clima del servidor dedicado de Assetto Corsa."
+    current="map"
+>
+    <div class="page-head">
+        <h1 class="page-title">Mapa</h1>
+    </div>
+
+    <p class="logs-state" id="map-state" role="status">
+        Cargando mapa…
+    </p>
+
+    <form class="stack" id="map-form" hidden>
+        <div class="content-grid config-grid" id="map-grid" aria-busy="true">
+            <section class="card config-card" aria-labelledby="map-pista">
+                <div class="config-header">
+                    <Icon name="map" size={20} />
+                    <h2 id="map-pista">Mapa</h2>
+                </div>
+                <div class="config-body">
+                    <div class="field-row">
+                        <label class="field">
+                            <span class="field-label">Pista</span>
+                            <input
+                                class="field-input mono"
+                                type="text"
+                                list="track-list"
+                                data-section="SERVER"
+                                data-key="TRACK"
+                            />
+                            <datalist id="track-list"></datalist>
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Variante</span>
+                            <input
+                                class="field-input mono"
+                                type="text"
+                                data-section="SERVER"
+                                data-key="CONFIG_TRACK"
+                            />
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card config-card" aria-labelledby="map-hora">
+                <div class="config-header">
+                    <Icon name="sun" size={20} />
+                    <h2 id="map-hora">Hora del día</h2>
+                </div>
+                <div class="config-body">
+                    <label class="field">
+                        <span class="field-label">Hora (24 h)</span>
+                        <input
+                            class="field-input"
+                            type="time"
+                            id="hora-input"
+                        />
+                    </label>
+                    <div class="config-item">
+                        <span class="config-label">SUN_ANGLE resultante</span>
+                        <span class="config-value mono" id="hora-sol-valor">…</span>
+                    </div>
+                    <label class="field">
+                        <span class="field-label">Multiplicador de tiempo</span>
+                        <input
+                            class="field-input"
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            data-section="SERVER"
+                            data-key="TIME_OF_DAY_MULT"
+                        />
+                    </label>
+                </div>
+            </section>
+
+            <section class="card config-card" aria-labelledby="map-clima">
+                <div class="config-header">
+                    <Icon name="sun" size={20} />
+                    <h2 id="map-clima">Clima</h2>
+                </div>
+                <div class="config-body">
+                    <div class="stack" id="weather-cards" aria-busy="true"></div>
+                    <button
+                        class="btn btn-ghost"
+                        id="weather-add"
+                        type="button"
+                    >
+                        Agregar tramo
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <p class="alert" id="map-alert" role="alert" hidden></p>
+    </form>
+</BaseLayout>
+
+<script src="../scripts/map.js"></script>

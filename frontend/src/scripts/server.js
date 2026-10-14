@@ -220,7 +220,6 @@ async function control(endpoint, gerund, infinitivo) {
     } finally {
         spinner.remove();
         renderStatus();
-        restartBtn.disabled = false;
     }
 }
 

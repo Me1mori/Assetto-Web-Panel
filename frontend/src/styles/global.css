@@ -189,9 +189,9 @@ body {
     scrollbar-width: none;
 }
 
-/* En /config el botón Guardar va a la derecha, pegado al lado izquierdo
-   del menú. Sin botón la cabecera queda como siempre. */
-#config-save-top {
+/* En las páginas de ajustes el botón Guardar va a la derecha, pegado al lado
+   izquierdo del menú. Sin botón la cabecera queda como siempre. */
+#save-top {
     margin-left: auto;
 }
 
@@ -485,6 +485,23 @@ select.field-input {
     font-size: 1rem;
     color: var(--text);
     overflow-wrap: anywhere;
+}
+
+/* Grupos de coches (página /cars): reutilizan la tarjeta de tramo */
+.car-group {
+    padding: 0.9rem;
+    border: 1px solid var(--separator);
+    border-radius: var(--radius-md);
+    background: var(--surface-alt);
+}
+
+.car-row {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--separator);
+}
+
+.car-row:last-child {
+    border-bottom: none;
 }
 
 /* ---------- Control del servidor ---------- */

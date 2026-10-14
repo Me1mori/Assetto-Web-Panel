@@ -261,6 +261,8 @@ def validate_updates(updates: dict) -> tuple:
 
         clean_section: dict = {}
         for key, value in fields.items():
+            if value is None:
+                raise ValueError(f"[{section}] {key}: sin valor.")
             rule = allowed.get(key)
             if rule is None:
                 raise ValueError(f"Campo no editable: [{section}] {key}.")
@@ -373,15 +375,23 @@ def write_config(updates: dict) -> dict:
     if deleted and not remaining:
         raise ValueError("Debe quedar al menos un tramo de clima.")
 
-    # Nuevo tramo: solo el siguiente índice libre (sin huecos).
-    for section in clean:
-        match = WEATHER_SECTION.match(section)
-        if match and section not in present:
-            if int(match.group(1)) != len(present):
-                raise ValueError(
-                    f"[{section}] no sigue la secuencia: el siguiente es "
-                    f"[WEATHER_{len(present)}]."
-                )
+    # Nuevo tramo: solo índices contiguos al final (sin huecos). Se aceptan
+    # varios a la vez siempre que formen la secuencia siguiente completa.
+    new_weathers = sorted(
+        (
+            int(match.group(1))
+            for section, match in (
+                (s, WEATHER_SECTION.match(s)) for s in clean
+            )
+            if match and section not in present
+        )
+    )
+    for position, index in enumerate(new_weathers):
+        if index != len(present) + position:
+            raise ValueError(
+                f"[WEATHER_{index}] no sigue la secuencia: el siguiente es "
+                f"[WEATHER_{len(present)}]."
+            )
 
     renumber = {
         old: f"WEATHER_{new}"

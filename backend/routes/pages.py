@@ -20,10 +20,24 @@ async def index():
 
 
 @router.get("/config")
+@router.get("/config/")
 async def config():
     return page("config/index.html")
 
 
+@router.get("/map")
+@router.get("/map/")
+async def map_page():
+    return page("map/index.html")
+
+
+@router.get("/cars")
+@router.get("/cars/")
+async def cars_page():
+    return page("cars/index.html")
+
+
 @router.get("/menu")
+@router.get("/menu/")
 async def menu():
     return page("menu/index.html")

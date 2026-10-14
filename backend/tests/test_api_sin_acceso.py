@@ -26,6 +26,10 @@ ROOT = Path(__file__).resolve().parents[2]
 RUTAS = [
     "/api/server/status",
     "/api/server/logs",
+    "/api/server/config",
+    "/api/server/entry-list",
+    "/api/server/tracks",
+    "/api/server/available-cars",
     "/api/server/start",
     "/api/server/stop",
     "/api/server/restart",

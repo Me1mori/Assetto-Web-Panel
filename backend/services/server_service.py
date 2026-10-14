@@ -27,19 +27,38 @@ COMMAND_TIMEOUT = int(
 )
 
 
+def get_service_name() -> str:
+    """Unidad a controlar, leída en cada llamada (como `get_server_folder`).
+
+    `SERVICE_NAME` queda como foto inicial para compatibilidad; aquí manda el
+    entorno actual para que systemd y los tests con `monkeypatch` funcionen.
+    """
+    return os.environ.get("ASSETOSERVER_SERVICE_NAME", SERVICE_NAME)
+
+
+def get_command_timeout() -> int:
+    """Timeout vigente, leído en cada llamada."""
+    try:
+        return int(
+            os.environ.get("ASSETOSERVER_COMMAND_TIMEOUT", COMMAND_TIMEOUT)
+        )
+    except ValueError:
+        return COMMAND_TIMEOUT
+
+
 def _run(action: str) -> subprocess.CompletedProcess:
     try:
         return subprocess.run(
-            [SUDO, SYSTEMCTL, action, SERVICE_NAME],
+            [SUDO, SYSTEMCTL, action, get_service_name()],
             capture_output=True,
             text=True,
-            timeout=COMMAND_TIMEOUT,
+            timeout=get_command_timeout(),
             check=False
         )
     except subprocess.TimeoutExpired as error:
         raise RuntimeError(
             f"systemctl {action} tardó más de "
-            f"{COMMAND_TIMEOUT}s y se canceló."
+            f"{get_command_timeout()}s y se canceló."
         ) from error
 
 

@@ -423,3 +423,39 @@ def test_ruta_presets_sin_carpeta(panel, tmp_path, monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == {"presets": []}
+
+
+def test_agregar_dos_tramos_en_una_peticion(ini_file):
+    """Dos tramos nuevos contiguos se guardan juntos (el panel los acumula)."""
+    config = config_service.write_config(
+        {
+            "WEATHER_1": {"GRAPHICS": "rain"},
+            "WEATHER_2": {"GRAPHICS": "sunny"},
+        }
+    )
+
+    assert config["WEATHER_1"]["GRAPHICS"] == "rain"
+    assert config["WEATHER_2"]["GRAPHICS"] == "sunny"
+
+
+def test_agregar_dos_tramos_con_hueco_rechazado(ini_file):
+    """WEATHER_1 + WEATHER_3 sin WEATHER_2 sigue siendo hueco."""
+    import pytest as _pytest
+
+    with _pytest.raises(ValueError, match="secuencia"):
+        config_service.write_config(
+            {
+                "WEATHER_1": {"GRAPHICS": "rain"},
+                "WEATHER_3": {"GRAPHICS": "sunny"},
+            }
+        )
+
+
+def test_valor_none_no_se_guarda_como_texto(ini_file):
+    """Un campo en null no acaba escrito como la cadena "None"."""
+    import pytest as _pytest
+
+    with _pytest.raises(ValueError):
+        config_service.write_config({"SERVER": {"TRACK": None}})
+
+    assert config_service.read_config()["SERVER"]["TRACK"] == "imola"

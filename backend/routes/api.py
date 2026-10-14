@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException, Request
 
 from backend.security import check_same_origin
-from backend.services import config_service, log_service, server_service
+from backend.services import (
+    config_service,
+    entry_service,
+    log_service,
+    server_service,
+)
 
 router = APIRouter(
     prefix="/api/server",
@@ -36,6 +41,14 @@ def _upstream(action, name=None):
             status_code=502,
             detail=str(error)
         ) from error
+    except FileNotFoundError:
+        # El archivo falta: lo convierte la ruta en 404, no en 502.
+        raise
+    except OSError as error:
+        raise HTTPException(
+            status_code=502,
+            detail=str(error)
+        ) from error
 
 
 @router.get("/status")
@@ -59,6 +72,36 @@ def server_config():
 @router.get("/weather-presets")
 def weather_presets():
     return {"presets": config_service.get_weather_presets()}
+
+
+@router.get("/entry-list")
+def entry_list():
+    entries = entry_service.get_entry_list()
+    if "error" in entries:
+        raise HTTPException(status_code=404, detail=entries["error"])
+    return entries
+
+
+@router.get("/tracks")
+def tracks():
+    return {"tracks": entry_service.get_tracks()}
+
+
+@router.get("/available-cars")
+def available_cars():
+    return {"models": entry_service.get_available_cars()}
+
+
+@router.put("/entry-list")
+def entry_list_update(request: Request, payload: dict):
+    check_same_origin(request)
+    try:
+        cars = payload.get("cars", []) if isinstance(payload, dict) else []
+        return _upstream(lambda: entry_service.write_entry_list(cars))
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
 
 
 @router.put("/config")
